@@ -1,7 +1,10 @@
-const router = require('express').Router()
+const router = require("express").Router();
 
-router.get('/', (req, res) => {
-  res.json('All good in here')
-})
+router.get("/", (req, res) => {
+  res.json("All good in here");
+});
 
-module.exports = router
+const designerRoutes = require("./designer.routes");
+router.use("/designers", designerRoutes);
+
+module.exports = router;

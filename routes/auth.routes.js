@@ -8,13 +8,18 @@ router.get("/", (req, res) => {
   res.json("All good in auth");
 });
 router.post("/signup", async (req, res) => {
-  const { username, password } = req.body;
+  const { firstName, lastName, dateOfBirth, password } = req.body;
   const saltRounds = 13;
   const salt = bcrypt.genSaltSync(saltRounds);
   const hashedPassword = bcrypt.hashSync(password, salt);
 
   try {
-    const newUser = await User.create({ username, hashedPassword });
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      dateOfBirth,
+      hashedPassword,
+    });
     res.status(201).json(newUser);
   } catch (error) {
     console.log(error);
@@ -56,5 +61,14 @@ router.post("/login", async (req, res) => {
 router.get("/verify", isAuthenticated, (req, res) => {
   res.json({ message: "Hello", data: req.tokenPayload });
 });
+
+
+// Example to get back current user
+router.get("/user", isAuthenticated, async(req, res) => {
+  const userId = req.tokenPayload.userId
+
+  const currentUser = await User.findById(userId, { hashedPassword: 0 })
+});
+
 
 module.exports = router;

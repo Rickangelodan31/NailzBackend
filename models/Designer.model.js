@@ -14,20 +14,20 @@ const designerSchema = new Schema(
       required: [true, "designer is required."],
       trim: true,
     },
-    Style: {
+    style: {
       type: String,
       required: [true, "Style is required."],
     },
-    Image: {
+    image: {
       type: String,
       required: [true, "Image is required."],
     },
 
-    Location: {
-      type: String+Number,
+    location: {
+      type: String + Number,
       required: [true, "Location is required."],
     },
-    Telephone: {
+    telephone: {
       type: Number,
       required: [true, "Telephone is required."],
     },

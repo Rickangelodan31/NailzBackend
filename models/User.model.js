@@ -3,6 +3,20 @@ const { Schema, model } = require("mongoose");
 // TODO: Please make sure you edit the Book model to whatever makes sense in this case
 const userSchema = new Schema(
   {
+    firstName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    dateOfBirth: {
+      type: Number,
+      required: true,
+    },
     username: {
       type: String,
       required: true,
