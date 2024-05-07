@@ -1,8 +1,12 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, Types } = require("mongoose");
 
 // TODO: Please make sure you edit the Book model to whatever makes sense in this case
 const userSchema = new Schema(
   {
+    id: {
+      type: Types.ObjectId,
+      required: true,
+    },
     firstName: {
       type: String,
       required: true,
@@ -14,7 +18,7 @@ const userSchema = new Schema(
       trim: true,
     },
     dateOfBirth: {
-      type: Number,
+      type: String,
       required: true,
     },
     username: {
@@ -34,6 +38,6 @@ const userSchema = new Schema(
   }
 );
 
-const User = model("User", userSchema);
+const User = model("user", userSchema);
 
 module.exports = User;

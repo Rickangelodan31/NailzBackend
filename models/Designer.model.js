@@ -1,43 +1,42 @@
-const { Schema, model } = require("mongoose");
-const { type } = require("os");
+const { Schema, model, Types } = require("mongoose");
 
-// TODO: Please make sure you edit the Book model to whatever makes sense in this case
 const designerSchema = new Schema(
   {
+    vendor: {
+      type: Types.ObjectId,
+      required: [true],
+      ref: "User",
+    },
+    description: {
+      type: String,
+      required: [true],
+    },
     title: {
       type: String,
-      required: [true, "Title is required."],
-      trim: true,
-    },
-    designer: {
-      type: String,
-      required: [true, "designer is required."],
+      required: [true, "required."],
       trim: true,
     },
     style: {
       type: String,
-      required: [true, "Style is required."],
+      required: [true, "required."],
     },
     image: {
       type: String,
-      required: [true, "Image is required."],
+      required: [true, "required."],
     },
 
-    location: {
-      type: String + Number,
-      required: [true, "Location is required."],
-    },
     telephone: {
       type: Number,
-      required: [true, "Telephone is required."],
+      required: [true, "required."],
     },
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
 );
 
-const Designer = model("Designer", designerSchema);
+designerSchema.index({ title: "text" });
+
+const Designer = model("designer", designerSchema);
 
 module.exports = Designer;
