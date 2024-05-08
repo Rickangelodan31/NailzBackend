@@ -32,6 +32,7 @@ router.get("/", async (req, res) => {
     }); // Make sure to strip away the password
     res.json(designers);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: error.message });
   }
 });

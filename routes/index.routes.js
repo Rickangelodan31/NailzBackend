@@ -5,7 +5,7 @@ router.get("/", (req, res) => {
 });
 
 const designerRoutes = require("./Designer.routes");
-router.use("/Designers", designerRoutes);
+router.use("/Designer", designerRoutes);
 
 
 const userRoutes = require("./user.routes");
