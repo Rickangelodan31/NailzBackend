@@ -4,9 +4,8 @@ router.get("/", (req, res) => {
   res.json("All good in here");
 });
 
-const designerRoutes = require("./Designer.routes");
-router.use("/Designer", designerRoutes);
-
+const designerRoutes = require("./designer.routes");
+router.use("/Designers", designerRoutes);
 
 const userRoutes = require("./user.routes");
 router.use("/users", userRoutes);

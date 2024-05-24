@@ -83,6 +83,4 @@ router.delete("/:id", async (req, res) => {
 
 module.exports = router;
 
-/* {title: 'sdfsdf', author: 'poisdujofi09237846893745'}
 
-Book.find().populate('author') */

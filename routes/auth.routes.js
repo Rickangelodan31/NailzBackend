@@ -4,7 +4,6 @@ const bcrypt = require("bcryptjs");
 const router = require("express").Router();
 const { isAuthenticated } = require("../middlewares/route-gaurd.middleware");
 
-
 router.get("/", (req, res) => {
   res.json("All good in auth");
 });
