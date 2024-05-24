@@ -28,6 +28,13 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+
+    Bio: {
+      type: String,
+    },
+    Age: {
+      type: Number,
+    },
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
