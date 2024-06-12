@@ -53,7 +53,7 @@ router.get("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const updateDesigner = await Designer.findByIdAndUpdate(id, req.body, {
+    const updatedDesigner = await Designer.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
     });
@@ -67,20 +67,21 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", isAuthenticated, async (req, res) => {
   try {
     const { id } = req.params;
-    const designer = await Designer.findByIdAndDelete(id);
-    if (designer) {
-      res.json({ message: "Designer deleted successfully" });
-    } else {
-      res.status(404).json({ message: "Designer not found" });
+    const designer = await Designer.findById(id);
+
+    // Check if the authenticated user is the vendor of the designer
+    if (designer.vendor.toString() !== req.tokenPayload.userId) {
+      return res.status(403).json({ message: "Forbidden" });
     }
+
+    await Designer.findByIdAndDelete(id);
+    res.json({ message: "Designer deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
 module.exports = router;
-
-

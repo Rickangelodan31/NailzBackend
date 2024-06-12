@@ -1,9 +1,11 @@
 const { Schema, model } = require("mongoose");
-const { type } = require("mongoose");
 
-// TODO: Please make sure you edit the Book model to whatever makes sense in this case
+// Define the User schema
 const userSchema = new Schema(
   {
+    profilePicture: {
+      type: String,
+    },
     firstName: {
       type: String,
       required: true,
@@ -28,20 +30,28 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-
-    Bio: {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+    bio: {
       type: String,
     },
-    Age: {
+    age: {
       type: Number,
     },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    friends: [{ type: Schema.Types.ObjectId, ref: 'Friends' }]
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
-    timestamps: true,
+    timestamps: true, // This correctly enables timestamps
   }
 );
 
+// Create the User model
 const User = model("User", userSchema);
 
 module.exports = User;

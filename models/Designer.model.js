@@ -4,39 +4,37 @@ const designerSchema = new Schema(
   {
     vendor: {
       type: Types.ObjectId,
-      required: [true],
+      required: true,
       ref: "User",
     },
     description: {
       type: String,
-      required: [true],
     },
     title: {
       type: String,
-      required: [true, "required."],
+      required: [true, "Title is required."],
       trim: true,
     },
     style: {
       type: String,
-      required: [true, "required."],
     },
     image: {
       type: String,
-      required: [true, "required."],
+      required: [true, "Image is required."],
     },
-
     telephone: {
       type: Number,
-      required: [true, "required."],
+      required: [true, "Telephone is required."],
+    },
+    price: {
+      type: Number,
     },
   },
   {
-    timestamps: true,
+    timestamps: true, // This correctly enables timestamps
   }
 );
 
-designerSchema.index({ title: "text" });
-
-const Designer = model("designer", designerSchema);
+const Designer = model("Designer", designerSchema);
 
 module.exports = Designer;

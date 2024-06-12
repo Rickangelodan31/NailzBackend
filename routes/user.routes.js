@@ -6,25 +6,37 @@ const Designer = require("../models/Designer.model");
 
 // All routes start with /api/users
 
-// Need the middleware cloudinary
+// Route to handle profile picture uploads
 router.post(
-  "/",
+  "/profilePicture",
   isAuthenticated,
-  uploader.single("image"),
+  uploader.single("profilePicture"),
   async (req, res) => {
     try {
-      console.log(req.file);
-      const user = await User.create({
-        ...req.body,
-        vendor: req.tokenPayload.userId,
+      // Update the user's profile picture path in the database
+      await User.findByIdAndUpdate(req.tokenPayload.userId, {
         image: req.file.path,
       });
-      res.status(201).json(user);
+      res
+        .status(200)
+        .json({ message: "Profile picture uploaded successfully" });
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
   }
 );
+
+router.post("/", isAuthenticated, async (req, res) => {
+  try {
+    const user = await User.create({
+      ...req.body,
+      vendor: req.tokenPayload.userId,
+    });
+    res.status(201).json(user);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
 
 router.get("/", isAuthenticated, async (req, res) => {
   try {
@@ -40,26 +52,12 @@ router.get("/", isAuthenticated, async (req, res) => {
   }
 });
 
-// router.get("/:id", async (req, res) => {
-//   try {
-//     const user = await User.findById(req.params.id);
-//     if (user) {
-//       res.json(user);
-//     } else {
-//       res.status(404).json({ message: "user not found" });
-//     }
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// });
-
 router.put("/", isAuthenticated, async (req, res) => {
-  console.log(req.body)
+  console.log(req.body);
   try {
     const user = await User.findByIdAndUpdate(
       req.tokenPayload.userId,
       req.body,
-      
       {
         new: true,
         runValidators: true,
@@ -77,6 +75,9 @@ router.put("/", isAuthenticated, async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
+
+
+  
   try {
     const { id } = req.params;
     const user = await User.findByIdAndDelete(id);
