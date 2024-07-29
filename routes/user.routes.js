@@ -1,94 +1,66 @@
-const router = require("express").Router();
-const User = require("../models/User.model");
-const uploader = require("../middlewares/cloudinary.config");
-const { isAuthenticated } = require("../middlewares/route-gaurd.middleware");
-const Designer = require("../models/Designer.model");
+const express = require('express');
+const router = express.Router();
+const uploader = require('../middlewares/cloudinary.config');
+const { isAuthenticated } = require('../middlewares/route-gaurd.middleware');
 
-// All routes start with /api/users
+const { 
+    createUser, 
+    getAllUsers, 
+    getUserById, 
+    updateUser, 
+    deleteUser, 
+    searchUsers, 
+    getActiveUsers, 
+    getInactiveUsers, 
+    getProfile, 
+    updateProfile, 
+    getUserSettings, 
+    updateUserSettings 
+} = require('../controllers/UserController');
+
+// Basic CRUD operations
+router.post('/users', isAuthenticated, createUser);
+router.get('/users', isAuthenticated, getAllUsers);
+router.get('/users/:id', isAuthenticated, getUserById);
+router.put('/users/:id', isAuthenticated, updateUser);
+router.delete('/users/:id', isAuthenticated, deleteUser);
+
+// Additional operations
+router.get('/users/search', isAuthenticated, searchUsers);
+router.get('/users/active', isAuthenticated, getActiveUsers);
+router.get('/users/inactive', isAuthenticated, getInactiveUsers);
+
+// Profile and settings
+router.get('/profile', isAuthenticated, getProfile);
+router.put('/profile', isAuthenticated, updateProfile);
+router.get('/settings', isAuthenticated, getUserSettings);
+router.put('/settings', isAuthenticated, updateUserSettings);
 
 // Route to handle profile picture uploads
-router.post(
-  "/profilePicture",
-  isAuthenticated,
-  uploader.single("profilePicture"),
-  async (req, res) => {
+router.post('/profilePicture', isAuthenticated, uploader.single('profilePicture'), async (req, res) => {
     try {
-      // Update the user's profile picture path in the database
-      await User.findByIdAndUpdate(req.tokenPayload.userId, {
-        image: req.file.path,
-      });
-      res
-        .status(200)
-        .json({ message: "Profile picture uploaded successfully" });
+        await User.findByIdAndUpdate(req.tokenPayload.userId, {
+            image: req.file.path,
+        });
+        res.status(200).json({ message: 'Profile picture uploaded successfully' });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+        res.status(400).json({ message: error.message });
     }
-  }
-);
-
-router.post("/", isAuthenticated, async (req, res) => {
-  try {
-    const user = await User.create({
-      ...req.body,
-      vendor: req.tokenPayload.userId,
-    });
-    res.status(201).json(user);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
 });
 
-router.get("/", isAuthenticated, async (req, res) => {
-  try {
-    const users = await Designer.findOne({
-      vendor: req.tokenPayload.userId,
-    }).populate({
-      path: "vendor",
-      select: "-hashedPassword",
-    }); // Make sure to strip away the password
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-router.put("/", isAuthenticated, async (req, res) => {
-  console.log(req.body);
-  try {
-    const user = await User.findByIdAndUpdate(
-      req.tokenPayload.userId,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-    if (user) {
-      res.json(user);
-    } else {
-      res.status(404).json({ message: "user not found" });
+// Additional routes (from original example)
+router.get('/:userId/posts', isAuthenticated, async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const posts = await Post.find({ ownerId: userId });
+        if (posts) {
+            res.json(posts);
+        } else {
+            res.status(404).json({ message: 'No posts found for this user' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({ message: error.message });
-  }
-});
-
-router.delete("/:id", async (req, res) => {
-
-
-  
-  try {
-    const { id } = req.params;
-    const user = await User.findByIdAndDelete(id);
-    if (user) {
-      res.json({ message: "user deleted successfully" });
-    } else {
-      res.status(404).json({ message: "user not found" });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
 });
 
 module.exports = router;

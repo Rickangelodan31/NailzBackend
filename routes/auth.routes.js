@@ -8,7 +8,8 @@ router.get("/", (req, res) => {
   res.json("All good in auth");
 });
 router.post("/signup", async (req, res) => {
-  const { username, firstName, lastName, dateOfBirth, password } = req.body;
+  const { username, firstName, lastName, dateOfBirth, email, password } =
+    req.body;
   const saltRounds = 13;
   const salt = bcrypt.genSaltSync(saltRounds);
   const hashedPassword = bcrypt.hashSync(password, salt);
@@ -28,6 +29,7 @@ router.post("/signup", async (req, res) => {
       lastName: lastName,
       dateOfBirth: dateOfBirth,
       username: username,
+      email: email,
       hashedPassword: hashedPassword,
     });
     res.status(201).json(newUser);

@@ -6,6 +6,7 @@ const userSchema = new Schema(
     profilePicture: {
       type: String,
     },
+
     firstName: {
       type: String,
       required: true,
@@ -42,9 +43,19 @@ const userSchema = new Schema(
     age: {
       type: Number,
     },
+    active: {
+      type: Boolean,
+      default: true
+  },
+  settings: {
+    type: Object,
+    default: {}
+},
+createdAt: { type: Date, default: Date.now },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    friends: [{ type: Schema.Types.ObjectId, ref: 'Friends' }]
+    friends: [{ type: Schema.Types.ObjectId, ref: 'Friends' }],
+    vendor: { type: Schema.Types.ObjectId, ref: 'Designer' },
   },
   {
     timestamps: true, // This correctly enables timestamps
