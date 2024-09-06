@@ -1,27 +1,15 @@
-const { Schema, model } = require("mongoose");
+const mongoose = require("mongoose");
+const { Schema, model } = mongoose;
 
-// Define the User schema
 const userSchema = new Schema(
   {
-    profilePicture: {
-      type: String,
-    },
-
-    firstName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    lastName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    dateOfBirth: {
-      type: String,
-      required: true,
-    },
     username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+    email: {
       type: String,
       required: true,
       unique: true,
@@ -31,38 +19,14 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    email: {
+    role: {
       type: String,
-      required: true,
-      unique: true,
-      trim: true,
+      enum: ["owner", "admin", "user", "Ricky"], // Define possible roles
+      default: "user", // Default role is 'user'
     },
-    bio: {
-      type: String,
-    },
-    age: {
-      type: Number,
-    },
-    active: {
-      type: Boolean,
-      default: true
   },
-  settings: {
-    type: Object,
-    default: {}
-},
-createdAt: { type: Date, default: Date.now },
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    friends: [{ type: Schema.Types.ObjectId, ref: 'Friends' }],
-    vendor: { type: Schema.Types.ObjectId, ref: 'Designer' },
-  },
-  {
-    timestamps: true, // This correctly enables timestamps
-  }
+  { timestamps: true }
 );
 
-// Create the User model
 const User = model("User", userSchema);
-
 module.exports = User;

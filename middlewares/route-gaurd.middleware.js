@@ -1,21 +1,32 @@
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
+const User = require("../models/User.model"); // Adjust path as necessary
 
+const isAuthenticated = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const payload = jwt.verify(token, process.env.TOKEN_SECRET);
 
+    // Fetch user from the database to check the isAdmin status
+    const user = await User.findById(payload.userId);
 
-const isAuthenticated = (req, res, next) => {
-    try {
-      const token = req.headers.authorization.split(' ')[1] // get the token from headers "Bearer 123XYZ..."
-      const payload = jwt.verify(token, process.env.TOKEN_SECRET) // decode token and get payload
-  
-      req.tokenPayload = payload // to pass the decoded payload to the next route
-      next()
-    } catch (error) {
-      // the middleware will catch error and send 401 if:
-      // 1. There is no token
-      // 2. Token is invalid
-      // 3. There is no headers or authorization in req (no token)
-      res.status(401).json('token not provided or not valid')
+    if (!user) {
+      return res.status(401).json("User not found");
     }
-  }
 
-  module.exports = { isAuthenticated }
+    req.tokenPayload = payload;
+    req.user = user; // Attach the user object to req for access in the next route
+    next();
+  } catch (error) {
+    res.status(401).json("Token not provided or not valid");
+  }
+};
+
+const isAdmin = (req, res, next) => {
+  if (req.user && req.user.isAdmin) {
+    next();
+  } else {
+    res.status(403).json("Access denied. Admins only.");
+  }
+};
+
+module.exports = { isAuthenticated, isAdmin };
