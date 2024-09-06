@@ -1,16 +1,20 @@
 const { Schema, model, Types } = require("mongoose");
 
-const aboutSchema = new Schema(
-  {
-    CEO:{
-        name: "Ricardo Watson",
-        age: 32,
-        profileImage: "Ricky.png",
-        gitHub: "github.jpg",
-    },
-    
-  }
-);
+const aboutSchema = new Schema({
+  id: {
+    type: String,
+  },
+  name: { typr: String },
+
+  age: { type: Number },
+
+  profileImage: {
+    type: File,
+    required: true,
+  },
+
+  gitHub: { type: String, required: true, trim: true },
+});
 
 designerSchema.index({ title: "text" });
 
